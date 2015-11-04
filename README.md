@@ -1,16 +1,17 @@
-== Description ==
+# Description
 
-Experimental code using nodeJS and the Arduino using Johnny-five.
+Experimental web-based game using nodeJS, Arduino, NEOPixels.
 
-For Ravensbourne's Web Media BA course.
+For MozFest 2015, by Ravensbourne's BA Design & Coding and CodeZoners courses
+Nick Rothwell & Evan Raskob
 
-* start.js: basic starting point using a button and Arduino
-* buzzersound.js: using a button, Arduino, and sound playback (on the computer)
-* index.js: finished example using WeatherUnderground.com's JSON API to make a simple thermometer
+* index.js: nodeJS server
 
-== Installation ==
+# Installation
 
 download all the project files and run *npm install* to install the required node modules.
 
-then try "http://localhost:8080/client-example.html" in your web browser
+run the server by changing to the *server* folder and typing *node index.js*
+
+then try "http://localhost:8080/client/client-example.html" in your web browser
 

@@ -1,14 +1,14 @@
 {
-  "name": "weatherduino",
-  "version": "0.0.0",
-  "description": "weather app",
+  "name": "flash-n-dash",
+  "version": "0.0.1",
+  "description": "online game for MozFest 2015 by Ravensbourne rave.ac.uk",
   "main": "index.js",
   "scripts": {
     "test": "say sorry"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:pixelpusher/weatherduino.git"
+    "url": "git@github.com:pixelpusher/flash-n-dash.git"
   },
   "keywords": [
     "javascript",
@@ -19,15 +19,16 @@
   "author": "Evan Raskob",
   "license": "AGPL 3.0+",
   "bugs": {
-    "url": "https://github.com/pixelpusher/weatherduino/issues"
+    "url": "https://github.com/pixelpusher/flash-n-dash/issues"
   },
   "dependencies": {
     "connect": "~3.3.4",
-    "johnny-five": "~0.7.3",
-    "lame": "~1.0.3",
+    /*"johnny-five": "~0.7.3",*/
+    /*"lame": "~1.0.3",*/
     "serialport": "^1.4.10",
     "serve-static": "~1.8.0",
     "socket.io": "~1.2.1",
-    "speaker": "~0.0.10"
+    /*"speaker": "~0.0.10",*/
+    "nedb": "~0.11.0"
   }
 }

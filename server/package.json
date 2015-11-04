@@ -23,12 +23,9 @@
   },
   "dependencies": {
     "connect": "~3.3.4",
-    /*"johnny-five": "~0.7.3",*/
-    /*"lame": "~1.0.3",*/
     "serialport": "^1.4.10",
     "serve-static": "~1.8.0",
     "socket.io": "~1.2.1",
-    /*"speaker": "~0.0.10",*/
     "nedb": "~0.11.0"
   }
 }

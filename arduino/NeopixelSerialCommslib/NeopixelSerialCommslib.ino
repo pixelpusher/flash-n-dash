@@ -6,7 +6,7 @@
 #define LED 13
 
 // Which pin on the Arduino is connected to the NeoPixels?
-#define PIN            8
+#define PIN_BASE            8
 
 // How many NeoPixels are attached to the Arduino?
 #define NUMPIXELS      16
@@ -16,25 +16,31 @@
 // When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
 // Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
 // example for more information on possible values.
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-HSVColori myColor(100,255,100); // h,s,v
+Adafruit_NeoPixel pixels[] = {
+  Adafruit_NeoPixel(NUMPIXELS, PIN_BASE + 0, NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(NUMPIXELS, PIN_BASE + 1, NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(NUMPIXELS, PIN_BASE + 2, NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(NUMPIXELS, PIN_BASE + 3, NEO_GRB + NEO_KHZ800)
+};
+
+HSVColori myColor(100, 255, 100); // h,s,v
 
 
 CljComms comms;
 
 //
 // I expect 'L 1' or 'L 0'
-// 
+//
 
 void do_LED(int n, byte *args) {
   if (n >= 1) {
-    
+
     byte state = args[0]; // 0-255
 
     if (state == 1) {
       digitalWrite(LED, HIGH);
-    } 
+    }
     else {
       digitalWrite(LED, LOW);
     }
@@ -57,45 +63,51 @@ void do_PLUS(int n, byte *args) {
 }
 
 
-void do_HSV(int n, byte *args) 
+void do_HSV(int n, byte *args)
 {
-   byte response[1];
-   response[0] =  '0'; // assume failure
+  byte response[1];
+  uint32_t c;
+  int i, j;
+  response[0] =  '0'; // assume failure
 
-  if (n == 3)
+  if (n == 12)
   {
-    myColor.h = args[0];
-    myColor.s = args[1];
-    myColor.v = args[2];
+    for (j = 0; j < 4; j++) {
+      HSVColori myColor(args[j*3 + 0], args[j*3 + 1], args[j*3 + 2]);
 
-    uint32_t c = myColor.toRGB();
-
-    for(int i=0;i<NUMPIXELS;i++){
-      // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-      pixels.setPixelColor(i, c );
-      pixels.show(); // This sends the updated pixel color to the hardware.
+      c = myColor.toRGB();
+      for (i = 0; i < NUMPIXELS; i++) {
+        // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+        pixels[j].setPixelColor(i, c );
+      }
+      pixels[j].show(); // This sends the updated pixel color to the hardware.
     }
+
     response[0] =  '1'; // SUCCESS
   }
   comms.xmit('!', 1, response);
 }
 
 
-void do_Off(int n, byte *args) 
+void do_Off(int n, byte *args)
 {
-   byte response[1];
-   response[0] =  '0'; // assume failure
+  byte response[1];
+  int i, j;
+  response[0] =  '0'; // assume failure
 
   if (n >= 1)
   {
-    myColor.v = 0;
+    HSVColori myColor(0, 0, 0);
 
     uint32_t c = myColor.toRGB();
 
-    for(int i=0;i<NUMPIXELS;i++){
-      // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-      pixels.setPixelColor(i, c );
-      pixels.show(); // This sends the updated pixel color to the hardware.
+    for (j = 0; j < 4; j++) {
+      for (i = 0; i < NUMPIXELS; i++) {
+        // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+        pixels[0].setPixelColor(i, c );
+        pixels[0].show(); 
+      }
+      pixels[j].show(); // This sends the updated pixel color to the hardware.
     }
     response[0] =  '1'; // SUCCESS
   }
@@ -103,10 +115,10 @@ void do_Off(int n, byte *args)
 }
 
 
-void do_On(int n, byte *args) 
+void do_On(int n, byte *args)
 {
-   byte response[1];
-   response[0] =  '0'; // assume failure
+  byte response[1];
+  response[0] =  '0'; // assume failure
 
   if (n >= 1)
   {
@@ -114,11 +126,11 @@ void do_On(int n, byte *args)
 
     uint32_t c = myColor.toRGB();
 
-    for(int i=0;i<NUMPIXELS;i++){
+    for (int i = 0; i < NUMPIXELS; i++) {
       // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-      pixels.setPixelColor(i, c );
-      pixels.show(); // This sends the updated pixel color to the hardware.
+      pixels[0].setPixelColor(i, c );
     }
+    pixels[0].show(); // This sends the updated pixel color to the hardware.
     response[0] =  '1'; // SUCCESS
   }
   comms.xmit('!', 1, response);
@@ -129,20 +141,24 @@ void do_On(int n, byte *args)
 
 void setup() {
   pinMode(LED, OUTPUT);
-  
+
   delay(5); // let things settle
+  HSVColori myColor(100, 255, 100);
   uint32_t c = myColor.toRGB();
 
   // debug:
   //Serial.println(c,BIN);
 
-  pixels.begin(); // This initializes the NeoPixel library.
-  for(int i=0;i<NUMPIXELS;i++){
-    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-    pixels.setPixelColor(i, c ); // Moderately bright green color.
-    pixels.show(); // This sends the updated pixel color to the hardware.
-  }
+  for (int n = 0; n < 4; n++) {
+    pixels[n].begin(); // This initializes the NeoPixel library.
 
+    for (int i = 0; i < NUMPIXELS; i++) {
+      // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+      pixels[n].setPixelColor(i, c ); // Moderately bright green color.
+    }
+
+    pixels[n].show(); // This sends the updated pixel color to the hardware.
+  }
 
   comms.begin(BAUDRATE);
   comms.bind('L', do_LED);
@@ -157,5 +173,4 @@ void loop() {
     comms.process(Serial.read());
   }
 }
-
 

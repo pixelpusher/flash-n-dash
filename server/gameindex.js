@@ -103,6 +103,36 @@ console.log(getIPAddresses());
 //
 
 var clients = [];
+//http://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately
+/* accepts parameters
+ * h  Object = {h:x, s:y, v:z}
+ * OR
+ * h, s, v
+*/
+function HSVtoRGB(h, s, v) {
+    var r, g, b, i, f, p, q, t;
+    if (arguments.length === 1) {
+        s = h.s, v = h.v, h = h.h;
+    }
+    i = Math.floor(h * 6);
+    f = h * 6 - i;
+    p = v * (1 - s);
+    q = v * (1 - f * s);
+    t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+    }
+    return {
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
+    };
+}
 
 function makeEmptyClients(n) {
   clients = [];
@@ -110,12 +140,15 @@ function makeEmptyClients(n) {
     var client = {};
     var h = i/n;
     client.hue = h;
+    client.rgb = HSVtoRGB(h, 1, 1);
     client.index = i;
     client.socket = false;
     clients.push(client);
   }
 }
 makeEmptyClients(5);
+
+
 
 io.sockets.on('connection', function (socket)
 {
@@ -130,7 +163,7 @@ io.sockets.on('connection', function (socket)
       client = possibleClient;
       client.socket = socket;
       console.log("client " + i + " connected");
-      socket.emit('assignedIndex', client.index);
+      socket.emit('clientInit', {client.index, client.rgb});
       break;
     }
   }
@@ -138,6 +171,8 @@ io.sockets.on('connection', function (socket)
   
   socket.on('pressed', function(data) {
     console.log("client " + client.index + " pressed");
+    
+    /// send client.rgb to arduino
   });
   
   

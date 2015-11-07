@@ -163,7 +163,7 @@ io.sockets.on('connection', function (socket)
       client = possibleClient;
       client.socket = socket;
       console.log("client " + i + " connected");
-      socket.emit('clientInit', {client.index, client.rgb});
+      socket.emit('clientInit', {index: client.index, rgb: client.rgb});
       break;
     }
   }

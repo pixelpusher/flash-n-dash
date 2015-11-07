@@ -9,9 +9,9 @@ Nick Rothwell & Evan Raskob
 
 # Installation
 
-download all the project files and run *npm install* to install the required node modules.
-
-run the server by changing to the *server* folder and typing *node index.js*
-
-then try "http://localhost:8080/client/client-example.html" in your web browser
+1. Download all the project files
+2. Open Terminal and navigate to the `server` folder of this repo.
+3. Type `npm install` to install the required node modules.
+4. Run the server by typing `node index.js`
+5. Try `http://localhost:8080/client/client-example.html` in your web browser
 

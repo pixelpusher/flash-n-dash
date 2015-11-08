@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMPLEX JIMBO</title>
+    <style type="text/css">
+      body 
+      {
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <!-- load all js last -->
+
+    <!-- websockets from nodejs -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- jquery -->
+    <script type="text/javascript" src="js/lib/jquery-1.11.2.min.js"></script>
+
+
+    <!-- finally, our script! -->
+    <script type="text/javascript">
+      
+      //change LOCALHOST to your IP to enable connecting from other devices
+
+      var socket = io.connect('http://localhost:8080');
+
+      $(document).on('keydown', function(event) 
+      {
+        console.log('keydown', event.keyCode)
+        if (event.keyCode == 32) 
+        {
+          console.log('spacebar pressed', client)
+          socket.emit('pressed', client)
+        }
+      })
+
+      var client = {}
+
+
+      //
+      // websockets
+      //
+
+      // on connection to nodeJS server
+      socket.on('connect', function() 
+      {
+        console.log("***********connected to server")
+
+        socket.on('clientInit', function (data) 
+        {
+          client = data
+          var rgb = client.rgb.r + ',' + client.rgb.g + ',' + client.rgb.b
+          $('body').css('background-color', 'rgb(' + rgb  + ')')
+        })
+
+      })
+    </script>
+
+  </body>
+</html>

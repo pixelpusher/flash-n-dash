@@ -29,6 +29,9 @@
 #ifndef HSVColor_h
 #define HSVColor_h
 
+  
+static const float INV_INV60DEGREES = 6.0/255.0; //  = 360 / 60
+
 
 class HSVColori
 {
@@ -48,8 +51,6 @@ public:
   h(_h), s(_s), v(_v)
   { 
   }
-
-  static const float INV_INV60DEGREES = 6.0/255.0; //  = 360 / 60
 
   void set(int _h, int _s, int _v)
   {
